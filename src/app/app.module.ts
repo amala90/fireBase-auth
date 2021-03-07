@@ -12,6 +12,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+import { UserProfileModule } from './user-profile.module';
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,6 +29,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
     RouterModule,
     ReactiveFormsModule,
     AngularFireAuthModule,
+    UserProfileModule,
 
   ],
   providers: [],

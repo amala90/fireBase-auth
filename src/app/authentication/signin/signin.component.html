@@ -1,1 +1,24 @@
-<p> nouvelle enregistrement</p>
+<div class="row container" style="margin-top: 4em;">
+    <div class="col-4mx mx-auto">
+        <h2> Connexion</h2>
+        <form [formGroup]="signInForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+                <label for="email">Email </label>
+                <input type="text" id="email" class="form-control" formControlName="email">
+                <span *ngIf="formsControls.email.touched && formsControls.email.invalid" class="error">il faut un bon
+                    email</span>
+            </div>
+            <div class="form-group">
+                <label for="password">Mot de passe </label>
+                <input type="text" id="password" class="form-control" formControlName="password">
+
+                <span *ngIf="formsControls.password.touched && formsControls.password.hasError('required')"
+                    class="error">il faut entrer un mot de passe</span>
+                <span *ngIf="formsControls.password.touched && formsControls.password.hasError('pattern')"
+                    class="error">le mot de passe doit contenir au moins 6 caractères
+                </span>
+            </div>
+            <button type="button" class="btn btn-danger btn-block"> se connecter avec gmail</button>
+        </form>
+    </div>
+</div>
