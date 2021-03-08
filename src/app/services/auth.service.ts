@@ -1,5 +1,5 @@
-import { User } from './../_models/user.model';
-import { Observable, observable, of } from 'rxjs';
+import { user } from './../_models/user.model';
+import { empty, Observable, observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument } from "@angular/fire/firestore";
 import { AngularFireAuth } from '@angular/fire/auth';
@@ -15,14 +15,18 @@ import { UserProfileComponent } from '../user-profile/user-profile.component';
   providedIn: 'root'
 })
 export class AuthService {
-  const auth = userAuth;
-
   constructor(
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
     private router: Router
   ) {
-
+    this.afAuth.authState.subscribe(user => {
+      if (user) {
+        localStorage.setItem('user', JSON.stringify(user));
+      } else {
+        localStorage.setItem('user', '');
+      }
+    });
   }
 
   CreateNewUser(signUpForm: any) {
@@ -38,26 +42,39 @@ export class AuthService {
       window.alert(error.message);
     });
   }
+
+
   SignInWithGoogle() {
-    return this.afAuth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(result)=> {
+    var provider = new auth.auth.GoogleAuthProvider();
+    return this.afAuth.signInWithPopup(provider).then((result) => {
       this.SetUserData(result.user);
       this.router.navigate(['/user-profile']);
-    }).catch ((error) => {
+    }).catch((error) => {
       window.alert(error.message);
     });
   }
-  SetUserData(user, userName? {
-    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${User.uid}`);
-const userData: User = {
-  id: User.uid,
-  email: User.email,
-  userName: UserName || User.displayName,
-};
-return UserProfileComponent.det(userData, {
-  merge: true
-});
-  
+  SetUserData(user, userName?) {
+    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
+    const userData: user = {
+      uid: user.uid,
+      email: user.email,
+      userName: userName || user.displayName,
+    } as user;
+    return userRef.set(userData, {
+      merge: true
+    });
+  }
+  get isLoggedIn(): boolean {
+    const user = JSON.parse(localStorage.getItem('user') as string);
+    return (user !== '') ? true : false;
   }
 
+  SignOut() {
+    return this.afAuth.signOut().then(() => {
+      localStorage.removeItem('user');
+      this.router.navigate(['signin']);
+    });
+  }
 
+}
 
